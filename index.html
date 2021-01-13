@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+        <link rel="stylesheet" href="http://localhost:8080/src/style">
+    </head>
+    <body>
+        <div class="cabecalho">
+            <div class="topnav">
+                <div>
+                    <div class="topopcao">
+                        <div class="btnopcao">
+                            <button id="opcaoinfo">INFO</a>
+                        </div>
+                    </div>
+                    <div class="topopcao">
+                        <div class="btnopcao">
+                            <button id="opcaolimpar">LIMPAR</a>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="topopcao">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="titulo">
+            <div>
+                <h1>Diferença entre Horas</h1>
+            </div>
+        </div>
+
+        <div class="labelsInputs">
+            <div class="horarios">
+                <div class="outercontainerfirst">
+                    <div class="container">
+                        <label class="containerLabel"><strong>Horário Inicial</strong></label>
+                    </div>
+                    <div class="container">
+                        <div class="horariosInputs">
+                            <div>
+                                <input type="date" id="dataIni" max="3000-12-31">
+                            </div>
+                            <div>
+                                <input type="time" id="horaIni">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="outercontainersecond">    
+                    <div class="container">
+                        <label><strong>Horário Final</strong></label>
+                    </div>
+                    <div class="container">
+                        <div class="horariosInputs">
+                            <div>
+                                <input type="date" id="dataFim" max="3000-12-31">
+                            </div>
+                            <div>
+                                <input type="time" id="horaFim">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="divBotoes">
+            <div class="alterarBtn">
+                <button id="btnAlterarDatas">Alterar datas para hoje?</button>
+            </div>
+            <div class="resultadoBtn">
+                <button id="btnCalcular"><strong>Calcular</strong></button>
+            </div>
+        </div>
+
+        <div class="resultado invisible">
+        </div>
+
+        <div class="info invisible">
+            <div></div>
+        </div>
+
+        <div class="popup-calculo invisible">
+            <div class="popup"></div>
+        </div>
+
+        <div id="footer">
+            <h5>Developed by GabrielGFW - 2021 - <a href="https://github.com/gabrielgfw">Visit my GitHub.</a></h5>
+        </div>
+    </body>
+    <script type="text/javascript" src="http://localhost:8080/src/scripts"></script>
+</html>

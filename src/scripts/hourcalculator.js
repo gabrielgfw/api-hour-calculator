@@ -56,8 +56,10 @@ $(document).ready(() => {
 
         if(inputValue > MAX_DATE || inputValue < MIN_DATE || !moment(inputValue).isValid()) {
             alterarCorDeFundo(inputId, "invalid");
+            console.log("Validação Datas: Falhou");
         } else {
             alterarCorDeFundo(inputId, "valid");
+            console.log("Validação Datas: Passou");
         }
     }
 
@@ -65,8 +67,10 @@ $(document).ready(() => {
         const inputValue = moment($(inputId).val(), "HH:mm:ss");
         if(!moment(inputValue).isValid()) {
             alterarCorDeFundo(inputId, "invalid");
+            console.log("validação horas: Falhou!");
         } else {
             alterarCorDeFundo(inputId, "valid");
+            console.log("Validação Horas: passou!")
         }
     }
 
@@ -88,6 +92,8 @@ $(document).ready(() => {
         $("#horaFim").val("").removeClass(["invalid", "valid"]).addClass("untouched");
     }
 
+    
+
     /*
       > Botão Calcular:
          Preparar a requisição;
@@ -101,15 +107,23 @@ $(document).ready(() => {
         const dataFinal = moment($("#dataFim").val()).format("YYYY-MM-DD").toString();
         const horaInicial = $("#horaIni").val().toString();
         const horaFinal = $("#horaFim").val().toString();     
-
-        checarEDestacarCampos();
-        chamandoValidacoes();
         
+        validacaoVisualCampos();
+        chamandoValidacoes();
+
+        function validacaoVisualCampos() {
+            checarEDestacarCampo("data", "#dataIni");
+            checarEDestacarCampo("data", "#dataFim");
+            checarEDestacarCampo("hora", "#horaIni");
+            checarEDestacarCampo("hora", "#horaFim");
+        }
+
         function chamandoValidacoes() {
-            if(estaVazio("#dataIni") || estaVazio("#dataFim") || estaVazio("#horaIni") || estaVazio("#horaFim")) {
+            
+            if(estaVazio("#dataIni") === true || estaVazio("#dataFim") === true || estaVazio("#horaIni") === true || estaVazio("#horaFim") === true) {
                 chamarPopUp("falhou", "Verifique os campos!");
                 window.scroll(0, 0);
-    
+
             } else if(dataInvertida()) {
                 inverterValores("#dataIni", "#dataFim", "A data inicial informada é maior que a data final, deseja inverter?");
     
@@ -119,14 +133,6 @@ $(document).ready(() => {
             } else {
                 const body = montarReqBody();
                 chamarAPI(body);
-            }
-        }
-
-        function estaVazio(input) {
-            if($(input).val().length === 0) {
-                return true;
-            } else {
-                return false;
             }
         }
 
@@ -172,11 +178,13 @@ $(document).ready(() => {
             return req;
         }
 
-        function checarEDestacarCampos() {
-            validacaoDatas("#dataIni");
-            validacaoDatas("#dataFim");
-            validacaoHoras("#horaIni");
-            validacaoHoras("#horaFim");
+        function checarEDestacarCampo(tipo, campo) {
+            if(tipo === "hora") {
+                validacaoHoras(campo);
+            }
+            if(tipo === "data") {
+                validacaoDatas(campo);
+            }
         }
 
         function chamarAPI(body) {
@@ -307,14 +315,14 @@ $(document).ready(() => {
 
         function efeitoMouseHoverBotao(botao, alvo, estiloHover, estiloNormal) {
             $(botao).mouseover(function() {
-                if(estaVazio(estiloNormal)) {
+                if(estiloNormal.length === 0) {
                     $(this).parents(alvo).addClass(estiloHover);
                 } else {
                     $(this).parents(alvo).removeClass(estiloNormal).addClass(estiloHover);
                 }
 
             }).mouseout(function() {
-                if(estaVazio(estiloNormal)) {
+                if(estiloNormal.length === 0) {
                     $(this).parents(alvo).removeClass(estiloNormal);
                 } else {
                     $(this).parents(alvo).removeClass(estiloHover).addClass(estiloNormal);
@@ -392,6 +400,15 @@ $(document).ready(() => {
                     $(".popup-calculo").addClass("invisible");
                     $(".popup").removeClass(tipo);
                 }, 3000); 
+            }
+        }
+
+        function estaVazio(input) {
+
+            if($(input).val().length === 0) {
+                return true;
+            } else {
+                return false;
             }
         }
 

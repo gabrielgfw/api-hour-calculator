@@ -43,6 +43,7 @@ body {
 }
 
 #footer h5 {
+    text-shadow: 0px 0px 4px #ffffff38;
     color: #ffffffcb;
     padding: 15px;
     font-size: 14px;
@@ -138,11 +139,6 @@ button {
     background-color: #1dc775;
 }
 
-.divBotoes {
-    padding: 25px;
-}
-
-
 .titulo {
     padding: 20px;
     padding-top: 45px;
@@ -167,7 +163,6 @@ button {
 .titulo div h1 {
     font-size: 50px;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    animation: waving 5s ease-in-out infinite;
 }
 
 .labelsInputs {
@@ -189,6 +184,11 @@ button {
     align-items: center;
     width: 100%;
     text-align: left;
+}
+
+.alterarBtn,
+.resultadoBtn {
+    padding: 5px;
 }
 
 .alterarBtn #btnAlterarDatas {
@@ -220,6 +220,16 @@ button {
 
 .inputcorret {
     border-bottom: 3px solid rgba(81, 240, 134, 0.856)!important;
+}
+
+.divBotoes {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
 }
 
 
@@ -313,19 +323,6 @@ button {
     padding-bottom: 25px;
 }
 
-
-
-.resultadoBtn,
-.alterarBtn {
-    padding: 2rem;
-    padding-top: 1rem;
-    padding-bottom: 0rem;
-    justify-content: center;
-    display: flex;
-}
-
-
-
 .resultado {
     padding: 50px;
     padding-bottom: 100px;
@@ -335,60 +332,110 @@ button {
     flex-direction: column;
 }
 
-.resultado div {
-    height: 230px;
+.resultado .totalizador {
+    padding: 20px;
+    padding-bottom: 80px;
+}
+
+.resultado .totalizador div {
+    box-shadow: 0px 0px 20px #00000012;
+    border-radius: 1rem;
+    background-color: #25578238;
     width: 480px;
-    max-width: 480px;
-    padding: 10px;
+    height: 100px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    display: flex;
+}
+
+.resultado .totalizador #total-geral {
+    color: #ffffff;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 30px;
+}
+
+.resultado .contornoDiv {
+    padding-bottom: 35px;
+}
+
+.resultado .resultadoContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-image: linear-gradient(to bottom left, #2ca581, #208b56);
     border-radius: 1rem;
     font-family: 'Courier New', Courier, monospace;
-    -moz-text-align-last: center;
-    transition: visibility 0.6s,
+    height: 220px;
+    width: 480px;
+    max-width: 480px;
+    padding: 10px;
+    padding-top: 15px;
+    -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    transition: all 1s ease;
 }
 
 .resultado textarea {
-    background-image: linear-gradient(to left, #2ca581, #2eb370);
     text-align: left;
-    padding: 15px;
+    padding: 10px;
     height: 125px;
     width: 450px;
     min-width: 450px;
 }
 
-.resultado button {
-    border-radius: 1rem;
-    padding: 5px;
-    font-size: 15px;
-    height: 50px;
-    width: 30%;
-    background-color: #53ca8e;
-    color: #ffffff;
-}
 
-.resultado div .resultadoBtnDiv {
-    background-color: #ffffff00;
+.resultado .resultadoBtnDiv {
     display: flex;
     flex-direction: row;
+    padding-bottom: 10px;
+    padding-top: 20px;
+    padding-left: 5px;
+    padding-right: 5px;
     justify-content: space-between;
     height: fit-content;
+    width: 100%;
 }
 
-.resultado button:hover {
+
+.resultado .resultadoBtnDiv button {
+    border-radius: 1rem;
+    padding: 5px;
     font-size: 16px;
-    color: #faf7c8;
+    height: 50px;
+    width: 140px;
+    color: #ffffff;
 }
 
+.btnCopiar {
+    background-color: #2979bded
+}
 
-.resultado .tooltip {
-    width: 150px;
-    height: 50px;
-    border-radius: 0.8rem;
-    background-color: #272727;
-    color: #ffffff;
+.btnCopiar:hover {
+    background-color: #308fe0;
+    box-shadow: 0px 0px 20px #348cd8b0;
+    animation: wavingBtn 1s ease-in-out infinite;
+}
+
+.btnSomar {
+    background-color: #27bf64;
+}
+
+.btnSomar:hover {
+    background-color: #04ce55;
+    box-shadow: 0px 0px 20px #37ac5a75;
+    animation: wavingBtn 1s ease-in-out infinite;
+}
+
+.btnRemover {
+    background-color: #d45252;
+}
+
+.btnRemover:hover {
+    background-color: #d83939;
+    box-shadow: 0px 0px 20px #df25253f;
+    animation: wavingBtn 1s ease-in-out infinite;
 }
 
 #diasDiferentes {
@@ -518,6 +565,42 @@ animation-delay: -0.15s;
     background-color: #f7b5b5;
     box-shadow: 0px 0px 15px #f3494363;
 }
+
+.resultadoNormal {
+    box-shadow: 0px 0px 20px #00000012;
+    background-color: #0000001c;
+}
+
+.resultadoNovo {
+    box-shadow: 0px 0px 20px #2e83bfa3;
+    background-color: #4193c3d1;
+}
+
+.resultadoSomar {
+    box-shadow: 0px 0px 20px #63e467b0;
+    background-color: #20ad244d;
+}
+
+.resultadoExcluir {
+    /*
+    box-shadow: 0px 0px 20px #ff514996;
+    background-color: #f122228c;
+    */
+
+    box-shadow: 0px 0px 20px #ffd1d154;
+    background-color: #ff2a2a7a;
+}
+
+.resultadoTextoNormal {
+    background-color: #0000000f;
+}
+
+.resultadoTextoCopiar {
+    background-color: #1162dc6b;
+    box-shadow: 0px 0px 20px #357dff69;
+    text-shadow: 0px 0px 5px #a5d9ff;
+}
+
 
 @keyframes ring {
     0% {

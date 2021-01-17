@@ -1,53 +1,54 @@
-$(document).ready(function() {
+$(document).ready(() => {
+    // Variáveis globais:
+    const HOST_NAME = "http://localhost:8080";
+    const PATH = "/api/calc/";
+    var arquivoResultados = [];
+    var subtotal;
 
+    inicializarBotoes();
+    inicializarValidacaoCampos();
 
-    // ============================== //
-    // Botão alterar datas para hoje: //
-    // ============================== //
-    $("#btnAlterarDatas").click(function() {
-        $("#dataIni").val(moment().format("yyyy-MM-DD"));
-        validacaoDatas("#dataIni");
-        $("#dataFim").val(moment().format("yyyy-MM-DD"));
-        validacaoDatas("#dataFim");
-    });
-
-
-    // ====================== //
-    // Botão de informações : //
-    // ====================== //
-    $("#opcaoinfo").click(function() {
-        document.querySelector('.resultado').scrollIntoView({ 
-            behavior: 'smooth' 
+    
+    function inicializarBotoes() {
+        // Botão Alterar Datas.
+        $("#btnAlterarDatas").click(() => {
+            $("#dataIni").val(moment().format("yyyy-MM-DD"));
+            validacaoDatas("#dataIni");
+            $("#dataFim").val(moment().format("yyyy-MM-DD"));
+            validacaoDatas("#dataFim");
         });
-    });
 
-    $("#opcaolimpar").click(function() {
-        document.location.reload();
-    });
+        // Botão Limpar.
+        $("#opcaolimpar").click(() => {
+            document.location.reload();
+        });
 
+        // Botão Info.
+        $("#opcaoinfo").click(() => {
+            // document.querySelector(?).scrollIntoView({ 
+            //    behavior: 'smooth' 
+            // });
+        });
+    }
 
-    // ============================ //
-    // Validação visual dos inputs: //
-    // ============================ //
-    $("#dataIni").focusout(function() {
-        validacaoDatas("#dataIni");
-    });
+    function inicializarValidacaoCampos() {
+        $("#dataIni").focusout(() => {
+            validacaoDatas("#dataIni");
+        });
 
-    $("#dataFim").focusout(function() {
-        validacaoDatas("#dataFim");
-    });
+        $("#dataFim").focusout(() => {
+            validacaoDatas("#dataFim");
+        });
 
-    $("#horaIni").focusout(function() {
-        validacaoHoras("#horaIni");
-    });
+        $("#horaIni").focusout(() => {
+            validacaoHoras("#horaIni");
+        });
 
-    $("#horaFim").focusout(function() {
-        validacaoHoras("#horaFim");
-    });
+        $("#horaFim").focusout(() => {
+            validacaoHoras("#horaFim");
+        });
+    }
 
-
-    // Funções de validação:
-    // Check e Parse das informações.
     function validacaoDatas(inputId) {
         const MAX_DATE = moment("3000-12-31", "YYYY-MM-DD");
         const MIN_DATE = moment("1900-01-01", "YYYY-MM-DD");
@@ -57,14 +58,11 @@ $(document).ready(function() {
             alterarCorDeFundo(inputId, "invalid");
         } else {
             alterarCorDeFundo(inputId, "valid");
-            console.log(moment(inputValue).isValid());
         }
     }
 
     function validacaoHoras(inputId) {
         const inputValue = moment($(inputId).val(), "HH:mm:ss");
-        console.log(inputValue);
-
         if(!moment(inputValue).isValid()) {
             alterarCorDeFundo(inputId, "invalid");
         } else {
@@ -76,13 +74,11 @@ $(document).ready(function() {
         if(style === "valid") {
             $(inputId).removeClass("invalid");
             $(inputId).addClass("valid");
-        }
 
-        if(style === "invalid") {
+        } else if(style === "invalid") {
             $(inputId).removeClass("valid");
             $(inputId).addClass("invalid");
         }
-        
     }
 
     function limparInputs() {
@@ -92,21 +88,15 @@ $(document).ready(function() {
         $("#horaFim").val("").removeClass(["invalid", "valid"]).addClass("untouched");
     }
 
-    // Variáveis globais:
-    var arquivoResultados = [{}];
-    var subtotal;
+    /*
+      > Botão Calcular:
+         Preparar a requisição;
+         Chamar a API de cálculo;
+         Montar elementos e aprensetar na página;
+    */
+   
+    $("#btnCalcular").click(() => {
 
-    // ============== //
-    // # Botão Calcular:
-    // • Preparar a requisição;
-    // • Chamar a API de cálculo;
-    // • Montar elementos e aprensetar na página;
-    // ================================================================ //
-    $("#btnCalcular").click(function() {
-        const HOST_NAME = "http://localhost:8080";
-        const PATH = "/api/calc/";
-        const popUpSucesso = "Calculo Realizado!";
-        const popUpFalhou = "Verifique os Campos!";
         const dataInicial = moment($("#dataIni").val()).format("YYYY-MM-DD").toString();
         const dataFinal = moment($("#dataFim").val()).format("YYYY-MM-DD").toString();
         const horaInicial = $("#horaIni").val().toString();
@@ -116,14 +106,15 @@ $(document).ready(function() {
         chamandoValidacoes();
         
         function chamandoValidacoes() {
-            if(estaVazio()) {
-                chamarPopUp("falhou", popUpFalhou);
+            if(estaVazio("#dataIni") || estaVazio("#dataFim") || estaVazio("#horaIni") || estaVazio("#horaFim")) {
+                chamarPopUp("falhou", "Verifique os campos!");
+                window.scroll(0, 0);
     
             } else if(dataInvertida()) {
-                inverterDatas();
+                inverterValores("#dataIni", "#dataFim", "A data inicial informada é maior que a data final, deseja inverter?");
     
             } else if(horarioInvertido()) {
-                inverterHorarios();
+                inverterValores("#horaIni", "#horaFim", "Horário inicial é menor que o horário final, deseja inverter os horários?");
     
             } else {
                 const body = montarReqBody();
@@ -131,9 +122,8 @@ $(document).ready(function() {
             }
         }
 
-        function estaVazio() {
-            if($("#horaIni").val().length === 0 || $("#horaFim").val().length === 0 || 
-            $("#dataIni").val().length === 0 || $("#dataFim").val().length === 0) {
+        function estaVazio(input) {
+            if($(input).val().length === 0) {
                 return true;
             } else {
                 return false;
@@ -148,12 +138,12 @@ $(document).ready(function() {
             }
         }
 
-        function inverterDatas() {
-            let inverter = confirm("A data inicial informada é maior que a data final, deseja inverter?");
+        function inverterValores(primeiro, segundo, mensagem) {
+            let inverter = confirm(mensagem);
             if(inverter) {
-                let aux = $("#dataIni").val();
-                $("#dataIni").val($("#dataFim").val()).change();
-                $("#dataFim").val(aux).change();
+                const aux = $(primeiro).val();
+                $(primeiro).val($(segundo).val()).change();
+                $(segundo).val(aux).change();
             }
         }
 
@@ -200,74 +190,153 @@ $(document).ready(function() {
                 data: JSON.stringify(body),
             
                 success: (res) => {
-                        const response = [res];
-                        checarSePrimeiroRegistro(arquivoResultados, response);
-                        montarResultados(response);
+                        const response = res;
+                        registrarResultado(arquivoResultados, response);
+                        mostrarResultado();
                         limparInputs();
-                        chamarPopUp("sucesso", popUpSucesso);
+                        chamarPopUp("sucesso", "Cálculo realizado!");
                 },
 
                 error: (error) => {
                     alert("Erro ao tentar realizar o cálculo.");
-                    chamarPopUp("falhou", popUpFalhou);
+                    chamarPopUp("falhou", "Requisição com o servidor falhou!");
                 }
             });
         }
 
-        function checarSePrimeiroRegistro(array, response) {
-            if(array.length === 0) {
-                array[arquivoResultados.length] = response;
+        function registrarResultado(array, response) {
+            var bodyResponse = response;
+            var arrayLength = array.length;
+            bodyResponse["somar"] = false;
+
+            if(arrayLength === 0) {
+                bodyResponse["id"] = mascaraIdResultado(0); 
+                array[0] = response;
+
             } else {
+                bodyResponse["id"] = mascaraIdResultado(arrayLength - 1);
                 array.push(response);
             }
         }
 
-        function montarResultados(response) {
-            var startHour;
-            var finalHour;
-            var horasResultado;
-            var minutosResultado;
-            var identificador;
-            
-           criarElementosHTML();
-           mostrarElementosHTML();
+        function mascaraIdResultado(index) {
+            return "resultado" + mascaraDoisDigitos(index);
+        }
 
-           function criarElementosHTML() {
-                for(let i = 0; i < response.length; i++) {
-                    startHour = response[i].input.startHour;
-                    finalHour = response[i].input.finalHour;
-                    horasResultado = response[i].result.diffHours.toString();
-                    minutosResultado = response[i].result.diffMinutes.toString();
-                    identificador = i;
+        function mostrarResultado() {
+            // Limpar Elementos (?)
+            // Limpa todos os elementos referete à resultados já exibidos,
+            // o fato disso ser necessário é que a regra abaixo atualiza
+            // todos os index do array de resultados, ordenando-os novamente.
+            limparElementos();
+            criarMostrarResultados(arquivoResultados);
+            atribuirFuncaoBotoes();
+            efeitoNovoResultado();
+        }
 
-                    // Montando os elementos para mostrar o resultado:
-                    const idResultadoDiv = criarElemento("div");
-                    const resultadoDiv = criarElemento("div", "resultadoContainer");                
-                    const resultadoText = criarElemento("textarea", "resultadoText");
-                    const divBtn = criarElemento("div");
-                    const copiarBtn = criarElemento("button", "resultadoBtn");
-                    const toggleBtn = criarElemento("button", "resultadoBtn");
-                    const deletarBtn = criarElemento("button", "resultadoBtn");
-        
-                    idResultadoDiv.innerHTML = "# - " + mascaraDoisDigitos(i);
+        function criarMostrarResultados(resultados) {
+            if(resultados.length > 0) {
+                for(let i = 0; i < resultados.length; i++) {
+                    const identificador = "resultado" + mascaraDoisDigitos(i.toString());
+                    const contornoDiv = criarElemento("div", "contornoDiv");
+                    const resultadoDiv = criarElemento("div", "resultadoContainer resultadoNormal");                
+                    const resultadoText = criarElemento("textarea", "resultadoText resultadoTextoNormal");
+                    const divBtn = criarElemento("div", "resultadoBtnDiv");
+                    const copiarBtn = criarElemento("button", "resultadoBtn btnCopiar " + identificador);
+                    const toggleBtn = criarElemento("button", "resultadoBtn btnSomar " + identificador);
+                    const deletarBtn = criarElemento("button", "resultadoBtn btnRemover " + identificador);
+    
                     resultadoText.innerHTML = 
-                    "Resultado: " + `${mascaraDoisDigitos(horasResultado)}` + "h " + `${mascaraDoisDigitos(minutosResultado)}` + "m" + "\n" +
+                    "Resultado: " + mascaraDoisDigitos(resultados[i].result.diffHours) + "h " + mascaraDoisDigitos(resultados[i].result.diffMinutes) + "m" + "\n" +
                     "-----------------------------------" + "\n" +
-                    startHour + " - Hora Inicial" + "\n" +
-                    finalHour + " - Hora Final";
-
-                    // Adicionando as classes:
-                    resultadoText.classList.add("resultadoText");
-                    copiarBtn.classList.add("resultadoBtn");
-                    toggleBtn.classList.add("resultadoBtn");
-                    deletarBtn.classList.add("resultadoBtn");
-                    divBtn.classList.add("resultadoBtnDiv");
-
+                    resultados[i].input.startHour + " - Hora Inicial" + "\n" +
+                    resultados[i].input.finalHour + " - Hora Final";
+                    copiarBtn.innerHTML = "Copiar";
+                    toggleBtn.innerHTML = "Somar";
+                    deletarBtn.innerHTML = "Remover";
+    
                     // Append ao html principal:
                     resultadoDiv.append(resultadoText);
                     divBtn.append(copiarBtn, toggleBtn, deletarBtn);
                     resultadoDiv.append(divBtn);
-                    $(".resultado").append(resultadoDiv);
+                    contornoDiv.append(resultadoDiv);
+                    $(".resultado").append(contornoDiv);
+                }
+
+                // Apenas exibe a div principal dos resultados;
+                mostrarElementosHTML();
+            } else {
+                // Caso não haja resultados a serem exibidos, a div volta a ser invisível.
+                // Necessário caso exista um único resultado e ele seja removido.
+                esconderElementosHTML();
+            }
+        }
+
+        function efeitoNovoResultado() {
+            let ultimaEntrada = ".resultado" + mascaraDoisDigitos((arquivoResultados.length - 1));
+
+            $(ultimaEntrada).parents(".resultadoContainer").removeClass("resultadoNormal").addClass("resultadoNovo");
+            setTimeout(function () {
+                $(ultimaEntrada).parents(".resultadoContainer").removeClass("resultadoNovo").addClass("resultadoNormal");
+            }, 1000);
+        }
+
+        function atribuirFuncaoBotoes() {
+            efeitoMouseHoverBotao(".btnRemover", ".resultadoContainer", "resultadoExcluir", "resultadoNormal");
+            efeitoMouseHoverBotao(".btnSomar", ".resultadoContainer", "resultadoSomar", "resultadoNormal");
+            efeitoMouseHoverBotao(".btnCopiar", ".resultadoText", "resultadoTextoCopiar", "resultadoTextoNormal");
+            removerCalculo(".btnRemover");
+        }
+
+        function removerCalculo(botao) {
+            $(botao).click(function() {
+                const classes = $(this).attr("class").split(" ");
+                const idResultado = classes[(classes.length - 1)].slice("resultado");
+
+                for(var i = 0; i < arquivoResultados.length; i++) {
+                    if(arquivoResultados[i].id === idResultado) {
+                        console.log(i);
+                        console.log(arquivoResultados[i]);
+                        arquivoResultado = arquivoResultados.splice(i, 1);
+                    }
+                }
+                // Atualizando os resultados restantes:
+                mostrarResultado();
+            });
+        }
+
+        function efeitoMouseHoverBotao(botao, alvo, estiloHover, estiloNormal) {
+            $(botao).mouseover(function() {
+                if(estaVazio(estiloNormal)) {
+                    $(this).parents(alvo).addClass(estiloHover);
+                } else {
+                    $(this).parents(alvo).removeClass(estiloNormal).addClass(estiloHover);
+                }
+
+            }).mouseout(function() {
+                if(estaVazio(estiloNormal)) {
+                    $(this).parents(alvo).removeClass(estiloNormal);
+                } else {
+                    $(this).parents(alvo).removeClass(estiloHover).addClass(estiloNormal);
+                }
+            });
+        }
+
+        function estaVazio(valor) {
+            if(valor === null) {
+                return true;
+            }
+            return false;
+        }
+
+        function limparElementos() {
+            $(".contornoDiv").remove();
+        }
+
+        function somarResultados(resultados) {
+            for(var i = 0; i < arquivoResultados.length; i++) {
+                if(arquivoResultados[i].somar) {
+                    subtotal += arquivoResultados[i];
                 }
             }
         }
@@ -276,34 +345,41 @@ $(document).ready(function() {
             let elemento = document.createElement(elementoHtml);    
 
             if(classe != null) {
-                elemento.classList.add(classe);
+                const classes = classe.split(' ')
+                classes.forEach((classe) => {
+                    elemento.classList.add(classe);
+                });
             }
             return elemento;
         }
 
         function alterarSubtotal(tipo, valor) {
-            const tipos = ["entrada", "saida"];
-
-            if(tipo === tipos[0]) {
+            if(tipo === "entrada") {
                 subtotal += valor;
             }
-
-            if(tipo === tipos[1]) {
+            if(tipo === "saida") {
                 subtotal -= valor;
             }
         }
  
         function mascaraDoisDigitos(valor) {
-            if(valor.length === 1) {
-                return "0" + valor.toString();
+            const parseString = valor.toString();
+            
+            if(parseString.length === 1) {
+                return "0" + parseString;
             } else {
-                return valor;
+                return parseString;
             }
         }
 
         function mostrarElementosHTML() {
             $(".resultado").removeClass("invisible");
             window.scroll(0, $(window).height());
+        }
+
+        function esconderElementosHTML() {
+            $(".resultado").addClass("invisible");
+            window.scroll(0, 0);
         }
 
         function chamarPopUp(tipo, mensagem) {

@@ -157,13 +157,12 @@ function createResponse(resultObj) {
     return result;
 }
 
-// HTML RENDER:
 app.get("/src/scripts", (req, res) => {
-    res.sendFile(path.join(__dirname, "./src/scripts/hourcalculator.js"));
+    res.sendFile(path.join(__dirname, "./scripts/hourcalculator.js"));
 });
 
 app.get("/src/style", (req, res) => {
-    res.sendFile(path.join(__dirname, "./src/style/main.css"));
+    res.sendFile(path.join(__dirname, "./style/main.css"));
 });
 
 app.use((req,res) => {

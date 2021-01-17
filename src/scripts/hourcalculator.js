@@ -56,10 +56,8 @@ $(document).ready(() => {
 
         if(inputValue > MAX_DATE || inputValue < MIN_DATE || !moment(inputValue).isValid()) {
             alterarCorDeFundo(inputId, "invalid");
-            console.log("Validação Datas: Falhou");
         } else {
             alterarCorDeFundo(inputId, "valid");
-            console.log("Validação Datas: Passou");
         }
     }
 
@@ -67,10 +65,8 @@ $(document).ready(() => {
         const inputValue = moment($(inputId).val(), "HH:mm:ss");
         if(!moment(inputValue).isValid()) {
             alterarCorDeFundo(inputId, "invalid");
-            console.log("validação horas: Falhou!");
         } else {
             alterarCorDeFundo(inputId, "valid");
-            console.log("Validação Horas: passou!")
         }
     }
 
@@ -303,8 +299,6 @@ $(document).ready(() => {
 
                 for(var i = 0; i < arquivoResultados.length; i++) {
                     if(arquivoResultados[i].id === idResultado) {
-                        console.log(i);
-                        console.log(arquivoResultados[i]);
                         arquivoResultado = arquivoResultados.splice(i, 1);
                     }
                 }

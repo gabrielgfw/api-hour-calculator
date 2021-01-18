@@ -72,12 +72,10 @@ $(document).ready(() => {
 
     function alterarCorDeFundo(inputId, style) {
         if(style === "valid") {
-            $(inputId).removeClass("invalid");
-            $(inputId).addClass("valid");
+            $(inputId).removeClass("invalid").addClass("valid");
 
         } else if(style === "invalid") {
-            $(inputId).removeClass("valid");
-            $(inputId).addClass("invalid");
+            $(inputId).removeClass("valid").addClass("invalid");
         }
     }
 
@@ -87,8 +85,6 @@ $(document).ready(() => {
         $("#horaIni").val("").removeClass(["invalid", "valid"]).addClass("untouched");
         $("#horaFim").val("").removeClass(["invalid", "valid"]).addClass("untouched");
     }
-
-    
 
     /*
       > Botão Calcular:
@@ -116,7 +112,7 @@ $(document).ready(() => {
 
         function chamandoValidacoes() {
             
-            if(estaVazio("#dataIni") === true || estaVazio("#dataFim") === true || estaVazio("#horaIni") === true || estaVazio("#horaFim") === true) {
+            if(estaVazio("#dataIni") || estaVazio("#dataFim") || estaVazio("#horaIni") || estaVazio("#horaFim")) {
                 chamarPopUp("falhou", "Verifique os campos!");
                 window.scroll(0, 0);
 
@@ -157,15 +153,6 @@ $(document).ready(() => {
             }
         }
 
-        function inverterHorarios() {
-            let inverter = confirm("O primeiro horário está menor que o segundo horário, considerando que as datas são iguais, deseja inverter os horários?");
-            if(inverter) {
-                let aux = $("#horaIni").val();
-                $("#horaIni").val($("#horaFim").val()).change();
-                $("#horaFim").val(aux).change();
-            }
-        }
-
         function montarReqBody() {
             const req = {
                 startHour: moment(dataInicial + " " + horaInicial).format("YYYY-MM-DD HH:mm:ss"),
@@ -196,6 +183,7 @@ $(document).ready(() => {
                 success: (res) => {
                         const response = res;
                         registrarResultado(arquivoResultados, response);
+                        enumerarResultado(arquivoResultados);
                         mostrarResultado();
                         limparInputs();
                         chamarPopUp("sucesso", "Cálculo realizado!");
@@ -209,17 +197,21 @@ $(document).ready(() => {
         }
 
         function registrarResultado(array, response) {
-            var bodyResponse = response;
-            var arrayLength = array.length;
-            bodyResponse["somar"] = false;
+            var responseModificado = response;
+            responseModificado["somar"] = false;
 
-            if(arrayLength === 0) {
-                bodyResponse["id"] = mascaraIdResultado(0); 
+            if(array.length === 0) {
                 array[0] = response;
-
             } else {
-                bodyResponse["id"] = mascaraIdResultado(arrayLength - 1);
                 array.push(response);
+            }
+        }
+
+        function enumerarResultado(array) {
+            for(var i = 0; i < array.length; i++) {
+                var posicaoModificada = array[i];           
+                posicaoModificada["id"] = mascaraIdResultado(i);
+                array[i] = posicaoModificada;
             }
         }
 
@@ -230,8 +222,8 @@ $(document).ready(() => {
         function mostrarResultado() {
             // Limpar Elementos (?)
             // Limpa todos os elementos referete à resultados já exibidos,
-            // o fato disso ser necessário é que a regra abaixo atualiza
-            // todos os index do array de resultados, ordenando-os novamente.
+            // o fato disso ser necessário é que a regra 'criarMostrarResultados'
+            // atualiza todos os index do array de resultados, ordenando-os novamente.
             limparElementos();
             criarMostrarResultados(arquivoResultados);
             atribuirFuncaoBotoes();
@@ -241,7 +233,7 @@ $(document).ready(() => {
         function criarMostrarResultados(resultados) {
             if(resultados.length > 0) {
                 for(let i = 0; i < resultados.length; i++) {
-                    const identificador = "resultado" + mascaraDoisDigitos(i.toString());
+                    const identificador = resultados[i].id;
                     const contornoDiv = criarElemento("div", "contornoDiv");
                     const resultadoDiv = criarElemento("div", "resultadoContainer resultadoNormal");                
                     const resultadoText = criarElemento("textarea", "resultadoText resultadoTextoNormal");
@@ -266,7 +258,6 @@ $(document).ready(() => {
                     contornoDiv.append(resultadoDiv);
                     $(".resultado").append(contornoDiv);
                 }
-
                 // Apenas exibe a div principal dos resultados;
                 mostrarElementosHTML();
             } else {
@@ -289,20 +280,33 @@ $(document).ready(() => {
             efeitoMouseHoverBotao(".btnRemover", ".resultadoContainer", "resultadoExcluir", "resultadoNormal");
             efeitoMouseHoverBotao(".btnSomar", ".resultadoContainer", "resultadoSomar", "resultadoNormal");
             efeitoMouseHoverBotao(".btnCopiar", ".resultadoText", "resultadoTextoCopiar", "resultadoTextoNormal");
+            copiarCalculo(".btnCopiar");
+            //somarCalculo(".btnSomar");
             removerCalculo(".btnRemover");
+        }
+
+        function copiarCalculo(botao) {
+            $(botao).click(function() {
+                var $textarea = $(this).parent().parent().children(".resultadoText");
+                $textarea.select();
+                document.execCommand("copy");
+                chamarPopUp("sucesso", "Resultado copiado!");
+            });
         }
 
         function removerCalculo(botao) {
             $(botao).click(function() {
-                const classes = $(this).attr("class").split(" ");
-                const idResultado = classes[(classes.length - 1)].slice("resultado");
+                var classes = $(this).attr("class").split(" ");
+                var idResultado = classes[(classes.length - 1)];
 
                 for(var i = 0; i < arquivoResultados.length; i++) {
                     if(arquivoResultados[i].id === idResultado) {
-                        arquivoResultado = arquivoResultados.splice(i, 1);
+                        arquivoResultados.splice(i, 1);
                     }
                 }
+                chamarPopUp("excluido", "Resultado excluído!");
                 // Atualizando os resultados restantes:
+                enumerarResultado(arquivoResultados);
                 mostrarResultado();
             });
         }
@@ -311,6 +315,9 @@ $(document).ready(() => {
             $(botao).mouseover(function() {
                 if(estiloNormal.length === 0) {
                     $(this).parents(alvo).addClass(estiloHover);
+
+                } else if(alvo === ".resultadoText") {
+                
                 } else {
                     $(this).parents(alvo).removeClass(estiloNormal).addClass(estiloHover);
                 }
@@ -322,6 +329,8 @@ $(document).ready(() => {
                     $(this).parents(alvo).removeClass(estiloHover).addClass(estiloNormal);
                 }
             });
+
+
         }
 
         function estaVazio(valor) {
@@ -335,10 +344,10 @@ $(document).ready(() => {
             $(".contornoDiv").remove();
         }
 
-        function somarResultados(resultados) {
+        function checarSomaResultados(resultados) {
             for(var i = 0; i < arquivoResultados.length; i++) {
                 if(arquivoResultados[i].somar) {
-                    subtotal += arquivoResultados[i];
+                    
                 }
             }
         }
@@ -385,15 +394,22 @@ $(document).ready(() => {
         }
 
         function chamarPopUp(tipo, mensagem) {
-            if(tipo === "sucesso" || tipo === "falhou") {
-                $(".popup").html(mensagem);
-                $(".popup").addClass(tipo);
-                $(".popup-calculo").removeClass("invisible");
-    
+            if(tipo === "sucesso" || tipo === "falhou" || tipo === "excluido") {
+                const popUpContainer = document.createElement("div");
+                const novoPopUp = document.createElement("div");
+                const identificador = moment().format("HHmmssSSS").toString();
+
+                popUpContainer.classList.add("popup-container");
+                popUpContainer.classList.add(identificador)
+                novoPopUp.classList.add("popup");
+                novoPopUp.classList.add(tipo);
+                novoPopUp.innerHTML = mensagem;
+                popUpContainer.append(novoPopUp);
+                $(".popup-calculo").append(popUpContainer);
+                // Pop-up some da tela em 3 segundos.
                 setTimeout(function () {
-                    $(".popup-calculo").addClass("invisible");
-                    $(".popup").removeClass(tipo);
-                }, 3000); 
+                    $("." + identificador).remove();
+                }, 3000);
             }
         }
 
@@ -404,19 +420,6 @@ $(document).ready(() => {
             } else {
                 return false;
             }
-        }
-
-        function textoCopiado(btn) {
-            $(btn).html("Copiado!");
-            setTimeout(function () {
-                $(btn).html("CTRL + C");
-            }, 1000);
-        }
-
-        function copiarConteudo(inputId) {
-            var input = $(inputId);
-            input.select();
-            document.execCommand("copy");
         }
     });
 });

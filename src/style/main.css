@@ -307,9 +307,14 @@ button {
     padding-right: 35px;
     border-radius: 1rem;
     color: #ffffff;
+    height: fit-content;
 }
 
-.popup-calculo .popup {
+.popup-calculo .popup-container {
+    padding-bottom: 10px;
+}
+
+.popup-calculo .popup-container .popup {
     border-radius: 1rem;
     width: 250px;
     height: 60px;
@@ -543,13 +548,18 @@ animation-delay: -0.15s;
 }
 
 .sucesso {
-    box-shadow: 4px 4px 20px #4992d675;
+    box-shadow: 0px 0px 15px #4992d675;
     background-color: #3e9af0f6;
 }
 
 .falhou {
-    background-color: #ff4343d7;
     box-shadow: 0px 0px 15px #ffb06ff8;
+    background-color: #ff4343d7;  
+}
+
+.excluido {
+    box-shadow: 0px 0px 15px #fc905f96;
+    background-color: #e0631a;
 }
 
 .untouched {

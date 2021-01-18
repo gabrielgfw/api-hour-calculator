@@ -311,13 +311,15 @@ button {
 }
 
 .popup-calculo .popup-container {
+    -webkit-animation: fadeIn 500ms;
+    -moz-animation: fadeIn 500ms;
     padding-bottom: 10px;
 }
 
 .popup-calculo .popup-container .popup {
     border-radius: 1rem;
     width: 250px;
-    height: 60px;
+    height: fit-content;
     text-align: center;
     align-content: center;
     justify-content: center;
@@ -611,39 +613,50 @@ animation-delay: -0.15s;
     text-shadow: 0px 0px 5px #a5d9ff;
 }
 
+@-moz-keyframes fadeIn {
+    from {opacity:0;}
+    to {opacity:1;}
+}
+
+@-webkit-keyframes fadeIn {
+    from {opacity:0;}
+    to {opacity:1;}
+}
+
+@keyframes fadeIn {
+    from {opacity:0;}
+    to {opacity:1;}
+}
+@-moz-keyframes fadeOut {
+    from {opacity:1;}
+    to {opacity:0;}
+}
+
+@-webkit-keyframes fadeOut {
+    from {opacity:1;}
+    to {opacity:0;}
+}
+@keyframes fadeOut {
+    from {opacity:1;}
+    to {opacity:0;}
+}
 
 @keyframes ring {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
+    0% {transform: rotate(0deg);}
+    100% {transform: rotate(360deg);}
 }
   
 /* Wave Animation logo */ 
 @keyframes waving {
-    0% {
-        transform: translateY(0px);
-    }
-    50%{
-        transform: translateY(-2px);
-    }
-    100% {
-        transform: translateY(0px);
-    }
+    0% {transform: translateY(0px);}
+    50% {transform: translateY(-2px);}
+    100% {transform: translateY(0px);}
 }
 /* Wave Animation logo */ 
 @keyframes wavingBtn {
-    0% {
-        transform: translateY(0px);
-    }
-    50%{
-        transform: translateY(-2px);
-    }
-    100% {
-        transform: translateY(0px);
-    }
+    0% {transform: translateY(0px);}
+    50% {transform: translateY(-2px);}
+    100% {transform: translateY(0px);}
 }
 
 @media (max-width: 350px) {

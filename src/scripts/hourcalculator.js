@@ -400,16 +400,26 @@ $(document).ready(() => {
                 const identificador = moment().format("HHmmssSSS").toString();
 
                 popUpContainer.classList.add("popup-container");
-                popUpContainer.classList.add(identificador)
+                popUpContainer.id = identificador;
                 novoPopUp.classList.add("popup");
                 novoPopUp.classList.add(tipo);
                 novoPopUp.innerHTML = mensagem;
                 popUpContainer.append(novoPopUp);
                 $(".popup-calculo").append(popUpContainer);
-                // Pop-up some da tela em 3 segundos.
-                setTimeout(function () {
-                    $("." + identificador).remove();
+                
+                // TESTE
+                setTimeout(function() {
+                    $("#" + identificador).css('-webkit-animation', 'fadeOut 500ms');
+                    $("#" + identificador).bind('webkitAnimationEnd', function() {
+                        $("#" + identificador).remove();
+                    });
+
                 }, 3000);
+                
+                // Pop-up some da tela em 3 segundos.
+                // setTimeout(function () {
+                //     $("." + identificador).remove();
+                // }, 3000);
             }
         }
 

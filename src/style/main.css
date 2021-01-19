@@ -330,6 +330,22 @@ button {
     padding-bottom: 25px;
 }
 
+.confirm-box {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+    position: fixed;
+    top: 50%;
+    right: 50%;
+    padding-right: 35px;
+    border-radius: 1rem;
+    color: #ffffff;
+    width: fit-content;
+    height: fit-content;
+}
+
+
 .resultado {
     padding: 50px;
     padding-bottom: 100px;
@@ -340,6 +356,8 @@ button {
 }
 
 .resultado .totalizador {
+    -webkit-animation: fadeIn 500ms;
+    -moz-animation: fadeIn 500ms;
     padding: 20px;
     padding-bottom: 80px;
 }
@@ -349,18 +367,22 @@ button {
     border-radius: 1rem;
     background-color: #25578238;
     width: 480px;
-    height: 100px;
-    text-align: center;
+    height: 120px;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     align-content: center;
     display: flex;
 }
 
 .resultado .totalizador #total-geral {
+    width: 100%;
+    height: 50%;
+    padding: 20px;
+    text-align: left;
+    align-content: flex-start;
     color: #ffffff;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    font-size: 30px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 20px;
 }
 
 .resultado .contornoDiv {
@@ -381,7 +403,6 @@ button {
     -webkit-transition: all 1s ease;
     -moz-transition: all 1s ease;
     -o-transition: all 1s ease;
-    transition: all 1s ease;
 }
 
 .resultado textarea {
@@ -390,6 +411,7 @@ button {
     height: 125px;
     width: 450px;
     min-width: 450px;
+    transition: background-color 1s, font-size 1s, font-shadow 1s, box-shadow 0.5s;
 }
 
 
@@ -407,6 +429,7 @@ button {
 
 
 .resultado .resultadoBtnDiv button {
+    box-shadow: 0px 0px 20px #0000002c;
     border-radius: 1rem;
     padding: 5px;
     font-size: 16px;
@@ -594,12 +617,7 @@ animation-delay: -0.15s;
 }
 
 .resultadoExcluir {
-    /*
-    box-shadow: 0px 0px 20px #ff514996;
-    background-color: #f122228c;
-    */
-
-    box-shadow: 0px 0px 20px #ffd1d154;
+    box-shadow: 0px 0px 15px #f3494363;
     background-color: #ff2a2a7a;
 }
 
@@ -608,8 +626,7 @@ animation-delay: -0.15s;
 }
 
 .resultadoTextoCopiar {
-    background-color: #1162dc6b;
-    box-shadow: 0px 0px 20px #357dff69;
+    background-color: #19254830;
     text-shadow: 0px 0px 5px #a5d9ff;
 }
 

@@ -142,6 +142,7 @@ $(document).ready(() => {
                 const aux = $(primeiro).val();
                 $(primeiro).val($(segundo).val()).change();
                 $(segundo).val(aux).change();
+                chamarPopUp("sucesso", "Valores foram invertidos!");
             }
         }
 
@@ -228,6 +229,7 @@ $(document).ready(() => {
             criarMostrarResultados(arquivoResultados);
             atribuirFuncaoBotoes();
             efeitoNovoResultado();
+            checarSomaResultado(arquivoResultados);
         }
 
         function criarMostrarResultados(resultados) {
@@ -280,9 +282,86 @@ $(document).ready(() => {
             efeitoMouseHoverBotao(".btnRemover", ".resultadoContainer", "resultadoExcluir", "resultadoNormal");
             efeitoMouseHoverBotao(".btnSomar", ".resultadoContainer", "resultadoSomar", "resultadoNormal");
             efeitoMouseHoverBotao(".btnCopiar", ".resultadoText", "resultadoTextoCopiar", "resultadoTextoNormal");
+
             copiarCalculo(".btnCopiar");
-            //somarCalculo(".btnSomar");
+            somarCalculo(".btnSomar");
             removerCalculo(".btnRemover");
+        }
+
+        function somarCalculo(button) {
+            $(button).click(function() {
+                const idCalculo = retornarUltimaClasse($(this));
+                console.log("Entrou no somarCalculo():"); 
+                console.log("id: " + idCalculo);
+
+                for(var i = 0; i < arquivoResultados.length; i++) {
+                    if(arquivoResultados[i].id === idCalculo) {
+                        if(arquivoResultados[i].somar) {
+                            arquivoResultados[i].somar = false;    
+                        } else {
+                            arquivoResultados[i].somar = true;
+                        }
+                    }
+                }
+                checarSomaResultado(arquivoResultados);
+            });
+        }
+
+        function efeitoResultadoSomado(button, boolean) {
+            if(boolean) {
+                $(button).parents(".resultadoContainer").removeClass("resultadoNormal").addClass("resultadoSomar");
+            } else {
+                $(button).parents(".resultadoContainer").removeClass("resultadoSomar").addClass("resultadoNormal");
+            }
+        }
+
+        function checarSomaResultado(array) {
+            let somaTotal = 0;
+            let qtdCalculos = 0;
+
+            for(let i = 0; i < array.length; i++) {
+                if(array[i].somar) {
+                    let soma = parseInt(array[i].rawResult.diffInMinutes);
+                    somaTotal += soma;
+                    qtdCalculos++;
+                }
+            }
+
+            if(qtdCalculos > 0) {
+                let somaHoras;
+                let horasFinal;
+                let minutosFinal;
+                let retornoCalculo;
+
+                somaHoras = somaTotal / 60;
+                horasFinal = parseInt(somaHoras);
+                minutosFinal = parseFloat((somaHoras - horasFinal)) * 60;
+
+                retornoCalculo = mascaraDoisDigitos(horasFinal) + "h " + mascaraDoisDigitos(minutosFinal.toFixed(0)) + "m";
+                alterarSubtotal(retornoCalculo, qtdCalculos);
+                toggleExibirTotalizador(true);
+            } else {
+                toggleExibirTotalizador(false);
+            }
+        }
+
+        function toggleExibirTotalizador(boolean) {
+            if(boolean) {
+                $(".totalizador").removeClass("invisible");
+            }
+            if(!boolean) {
+                $(".totalizador").addClass("invisible");
+            }
+        }
+
+        function alterarSubtotal(resultado, qtdCalc) {            
+            const exibicaoResultado =
+            "Soma Total: " + resultado + "</br>" +
+            "--------------------------" + "</br>" +
+            mascaraDoisDigitos(qtdCalc) + " selecionado(s)";
+
+            console.log(exibicaoResultado);
+            $("#total-geral").html(exibicaoResultado);
         }
 
         function copiarCalculo(botao) {
@@ -296,8 +375,7 @@ $(document).ready(() => {
 
         function removerCalculo(botao) {
             $(botao).click(function() {
-                var classes = $(this).attr("class").split(" ");
-                var idResultado = classes[(classes.length - 1)];
+                const idResultado = retornarUltimaClasse($(this));
 
                 for(var i = 0; i < arquivoResultados.length; i++) {
                     if(arquivoResultados[i].id === idResultado) {
@@ -311,26 +389,34 @@ $(document).ready(() => {
             });
         }
 
+        // Passe o '$(this)' para essa função sempre.
+        function retornarUltimaClasse(elementoThis) {
+            const classes = elementoThis.attr("class").split(" ");
+            const resultado = classes[(classes.length - 1)];
+            return resultado;
+        }
+
         function efeitoMouseHoverBotao(botao, alvo, estiloHover, estiloNormal) {
             $(botao).mouseover(function() {
+        
                 if(estiloNormal.length === 0) {
                     $(this).parents(alvo).addClass(estiloHover);
-
                 } else if(alvo === ".resultadoText") {
-                
+                    $(this).parent().parent().children(alvo).removeClass(estiloNormal).addClass(estiloHover);
                 } else {
                     $(this).parents(alvo).removeClass(estiloNormal).addClass(estiloHover);
                 }
 
             }).mouseout(function() {
+
                 if(estiloNormal.length === 0) {
                     $(this).parents(alvo).removeClass(estiloNormal);
+                } else if(alvo === ".resultadoText") {
+                    $(this).parent().parent().children(alvo).removeClass(estiloHover).addClass(estiloNormal);
                 } else {
                     $(this).parents(alvo).removeClass(estiloHover).addClass(estiloNormal);
                 }
             });
-
-
         }
 
         function estaVazio(valor) {
@@ -344,14 +430,6 @@ $(document).ready(() => {
             $(".contornoDiv").remove();
         }
 
-        function checarSomaResultados(resultados) {
-            for(var i = 0; i < arquivoResultados.length; i++) {
-                if(arquivoResultados[i].somar) {
-                    
-                }
-            }
-        }
-
         function criarElemento(elementoHtml, classe) {
             let elemento = document.createElement(elementoHtml);    
 
@@ -362,15 +440,6 @@ $(document).ready(() => {
                 });
             }
             return elemento;
-        }
-
-        function alterarSubtotal(tipo, valor) {
-            if(tipo === "entrada") {
-                subtotal += valor;
-            }
-            if(tipo === "saida") {
-                subtotal -= valor;
-            }
         }
  
         function mascaraDoisDigitos(valor) {
@@ -415,16 +484,10 @@ $(document).ready(() => {
                     });
 
                 }, 3000);
-                
-                // Pop-up some da tela em 3 segundos.
-                // setTimeout(function () {
-                //     $("." + identificador).remove();
-                // }, 3000);
             }
         }
 
         function estaVazio(input) {
-
             if($(input).val().length === 0) {
                 return true;
             } else {

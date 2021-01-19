@@ -46,14 +46,10 @@ app.post("/api/calc/", (req, res) => {
 });
 
 function createLog(type, message, extra) {
-    const types = ["normal", "aditional"];
-
-    // normal:
-    if(type === types[0]) {
+    if(type === "normal") {
         return console.log(hourNow() + message);
     }
-    // aditional:
-    if(type === type[1]) {
+    if(type === "aditional") {
         return console.log(hourNow() + message + " - " + extra);
     }
 }

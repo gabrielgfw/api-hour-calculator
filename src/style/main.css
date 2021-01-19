@@ -318,7 +318,7 @@ button {
 
 .popup-calculo .popup-container .popup {
     border-radius: 1rem;
-    width: 250px;
+    width: 220px;
     height: fit-content;
     text-align: center;
     align-content: center;
@@ -362,10 +362,52 @@ button {
     padding-bottom: 80px;
 }
 
-.resultado .totalizador div {
+.resultado .totalizador .totalizadorContainer {
+    padding: 5px;
+}
+
+.resultado .totalizador .totalizadorContainer .somadorDivBtn {
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #0000001c;
+}
+
+.resultado .totalizador .totalizadorContainer .somadorDivBtn button {
+    box-shadow: 0px 0px 20px #0000002c;
+    border-radius: 1rem;
+    padding: 5px;
+    font-size: 16px;
+    height: 50px;
+    width: 200px;
+    color: #ffffff;
+}
+
+.resultado .totalizador .totalizadorContainer .somadorDivBtn #somadorBtnCopiar {
+    background-color: #1d3a5240;
+}
+
+.resultado .totalizador .totalizadorContainer .somadorDivBtn #somadorBtnCopiar:hover {
+    background-color: #308fe0;
+    box-shadow: 0px 0px 20px #348cd8b0;
+    animation: wavingBtn 1s ease-in-out infinite;
+}
+
+.resultado .totalizador .totalizadorContainer .somadorDivBtn #somadorBtnCopiarTudo {
+    background-color: #1d3a5240;
+}
+
+.resultado .totalizador .totalizadorContainer .somadorDivBtn #somadorBtnCopiarTudo:hover {
+    background-color: #6f69d3;
+    box-shadow: 0px 0px 20px #c990f8b0;
+    animation: wavingBtn 1s ease-in-out infinite;
+}
+
+.resultado .totalizador .totalizadorContainer .somador {
     box-shadow: 0px 0px 20px #00000012;
     border-radius: 1rem;
-    background-color: #25578238;
     width: 480px;
     height: 120px;
     justify-content: center;
@@ -374,15 +416,17 @@ button {
     display: flex;
 }
 
-.resultado .totalizador #total-geral {
+.resultado .totalizador .totalizadorContainer .somador #total-geral {
     width: 100%;
-    height: 50%;
+    height: 100%;
     padding: 20px;
+    background-color: #0000001c;
     text-align: left;
     align-content: flex-start;
     color: #ffffff;
     font-family: 'Courier New', Courier, monospace;
     font-size: 20px;
+    font-weight: bold;
 }
 
 .resultado .contornoDiv {
@@ -439,7 +483,7 @@ button {
 }
 
 .btnCopiar {
-    background-color: #2979bded
+    background-color: #1d3a5240;
 }
 
 .btnCopiar:hover {
@@ -449,7 +493,7 @@ button {
 }
 
 .btnSomar {
-    background-color: #27bf64;
+    background-color: #1d3a5240;
 }
 
 .btnSomar:hover {
@@ -459,7 +503,7 @@ button {
 }
 
 .btnRemover {
-    background-color: #d45252;
+    background-color: #1d3a5240;
 }
 
 .btnRemover:hover {
@@ -570,6 +614,16 @@ animation-delay: -0.15s;
 
 .visible {
     display: contents;
+}
+
+.adicionadoSoma {
+    box-shadow: 0px 0px 15px #4ace4854;
+    background-color: #27bf64; 
+}
+
+.removidoSoma {
+    box-shadow: 0px 0px 15px #d6884975;
+    background-color: #fab829;
 }
 
 .sucesso {

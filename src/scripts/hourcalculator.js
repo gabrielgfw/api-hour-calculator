@@ -16,6 +16,7 @@ $(document).ready(() => {
             validacaoDatas("#dataIni");
             $("#dataFim").val(moment().format("yyyy-MM-DD"));
             validacaoDatas("#dataFim");
+            moverPagina(".titulo");
         });
 
         // Botão Limpar.
@@ -86,6 +87,10 @@ $(document).ready(() => {
         $("#horaFim").val("").removeClass(["invalid", "valid"]).addClass("untouched");
     }
 
+    function moverPagina(alvo) {
+        window.scroll(0, $(alvo).offset().top);
+    }
+
     /*
       > Botão Calcular:
          Preparar a requisição;
@@ -114,7 +119,7 @@ $(document).ready(() => {
             
             if(estaVazio("#dataIni") || estaVazio("#dataFim") || estaVazio("#horaIni") || estaVazio("#horaFim")) {
                 chamarPopUp("falhou", "Verifique os campos!");
-                window.scroll(0, 0);
+                moverPagina(".titulo");
 
             } else if(dataInvertida()) {
                 inverterValores("#dataIni", "#dataFim", "A data inicial informada é maior que a data final, deseja inverter?");
@@ -143,6 +148,7 @@ $(document).ready(() => {
                 $(primeiro).val($(segundo).val()).change();
                 $(segundo).val(aux).change();
                 chamarPopUp("sucesso", "Valores foram invertidos!");
+                moverPagina(".titulo");
             }
         }
 
@@ -236,26 +242,26 @@ $(document).ready(() => {
             if(resultados.length > 0) {
                 for(let i = 0; i < resultados.length; i++) {
                     const identificador = resultados[i].id;
-                    const contornoDiv = criarElemento("div", "contornoDiv");
-                    const resultadoDiv = criarElemento("div", "resultadoContainer resultadoNormal");                
+                    const contornoDiv = criarElemento("div", "contornoDiv");                
                     const resultadoText = criarElemento("textarea", "resultadoText resultadoTextoNormal");
                     const divBtn = criarElemento("div", "resultadoBtnDiv");
                     const copiarBtn = criarElemento("button", "resultadoBtn btnCopiar " + identificador);
-                    const toggleBtn = criarElemento("button", "resultadoBtn btnSomar " + identificador);
                     const deletarBtn = criarElemento("button", "resultadoBtn btnRemover " + identificador);
-    
+                    const somarBtn = criarElemento("button", "resultadoBtn btnSomar " + identificador);
+                    const resultadoDiv = criarElemento("div", "resultadoContainer resultadoNormal");
+
                     resultadoText.innerHTML = 
                     "Resultado: " + mascaraDoisDigitos(resultados[i].result.diffHours) + "h " + mascaraDoisDigitos(resultados[i].result.diffMinutes) + "m" + "\n" +
                     "-----------------------------------" + "\n" +
                     resultados[i].input.startHour + " - Hora Inicial" + "\n" +
                     resultados[i].input.finalHour + " - Hora Final";
                     copiarBtn.innerHTML = "Copiar";
-                    toggleBtn.innerHTML = "Somar";
+                    somarBtn.innerHTML = !resultados[i].somar ?  "Somar" : "Parar Soma";
                     deletarBtn.innerHTML = "Remover";
     
                     // Append ao html principal:
                     resultadoDiv.append(resultadoText);
-                    divBtn.append(copiarBtn, toggleBtn, deletarBtn);
+                    divBtn.append(copiarBtn, somarBtn, deletarBtn);
                     resultadoDiv.append(divBtn);
                     contornoDiv.append(resultadoDiv);
                     $(".resultado").append(contornoDiv);
@@ -279,11 +285,9 @@ $(document).ready(() => {
         }
 
         function atribuirFuncaoBotoes() {
-            efeitoMouseHoverBotao(".btnRemover", ".resultadoContainer", "resultadoExcluir", "resultadoNormal");
-            efeitoMouseHoverBotao(".btnSomar", ".resultadoContainer", "resultadoSomar", "resultadoNormal");
-            efeitoMouseHoverBotao(".btnCopiar", ".resultadoText", "resultadoTextoCopiar", "resultadoTextoNormal");
-
-            copiarCalculo(".btnCopiar");
+            adicionarEfeitoHoverBotoes();
+            copiarCalculo(".btnCopiar", "resultado");
+            copiarCalculo("#somadorBtnCopiar", "somador");
             somarCalculo(".btnSomar");
             removerCalculo(".btnRemover");
         }
@@ -291,15 +295,18 @@ $(document).ready(() => {
         function somarCalculo(button) {
             $(button).click(function() {
                 const idCalculo = retornarUltimaClasse($(this));
-                console.log("Entrou no somarCalculo():"); 
-                console.log("id: " + idCalculo);
 
                 for(var i = 0; i < arquivoResultados.length; i++) {
                     if(arquivoResultados[i].id === idCalculo) {
                         if(arquivoResultados[i].somar) {
-                            arquivoResultados[i].somar = false;    
+                            arquivoResultados[i].somar = false;
+                            $(this).html("Somar");
+                            chamarPopUp("removidoSoma", "Resultado removido do somador!");
                         } else {
                             arquivoResultados[i].somar = true;
+                            $(this).html("Parar Soma");
+                            chamarPopUp("adicionadoSoma", "Resultado adicionado ao somador!");
+                            moverPagina(".resultado");
                         }
                     }
                 }
@@ -307,12 +314,8 @@ $(document).ready(() => {
             });
         }
 
-        function efeitoResultadoSomado(button, boolean) {
-            if(boolean) {
-                $(button).parents(".resultadoContainer").removeClass("resultadoNormal").addClass("resultadoSomar");
-            } else {
-                $(button).parents(".resultadoContainer").removeClass("resultadoSomar").addClass("resultadoNormal");
-            }
+        function efeitoSomaAdicionada() {
+            // $(".resultado");
         }
 
         function checarSomaResultado(array) {
@@ -354,22 +357,36 @@ $(document).ready(() => {
             }
         }
 
+        function adicionarEfeitoHoverBotoes() {
+            efeitoMouseHoverBotao(".btnRemover", ".resultadoContainer", "resultadoExcluir", "resultadoNormal");
+            efeitoMouseHoverBotao(".btnSomar", ".resultadoContainer", "resultadoSomar", "resultadoNormal");
+            efeitoMouseHoverBotao(".btnCopiar", ".resultadoText", "resultadoTextoCopiar", "resultadoTextoNormal");
+        }
+
         function alterarSubtotal(resultado, qtdCalc) {            
             const exibicaoResultado =
-            "Soma Total: " + resultado + "</br>" +
-            "--------------------------" + "</br>" +
+            "Soma Total: " + resultado + "\n" +
+            "--------------------------" + "\n" +
             mascaraDoisDigitos(qtdCalc) + " selecionado(s)";
 
             console.log(exibicaoResultado);
             $("#total-geral").html(exibicaoResultado);
         }
 
-        function copiarCalculo(botao) {
+        function copiarCalculo(botao, tipo) {
             $(botao).click(function() {
-                var $textarea = $(this).parent().parent().children(".resultadoText");
-                $textarea.select();
-                document.execCommand("copy");
-                chamarPopUp("sucesso", "Resultado copiado!");
+                if(tipo === "resultado") {
+                    var $textarea = $(this).parent().parent().children("textarea");
+                    $textarea.select();
+                    document.execCommand("copy");
+                    chamarPopUp("sucesso", "Resultado copiado!");
+                }
+                if(tipo === "somador") {
+                    var $textarea = $("#total-geral");
+                    $textarea.select();
+                    document.execCommand("copy");
+                    chamarPopUp("sucesso", "Somador copiado!");
+                }    
             });
         }
 
@@ -454,16 +471,16 @@ $(document).ready(() => {
 
         function mostrarElementosHTML() {
             $(".resultado").removeClass("invisible");
-            window.scroll(0, $(window).height());
+            moverPagina(".contornoDiv:last");
         }
 
         function esconderElementosHTML() {
             $(".resultado").addClass("invisible");
-            window.scroll(0, 0);
+            moverPagina(".titulo");
         }
 
         function chamarPopUp(tipo, mensagem) {
-            if(tipo === "sucesso" || tipo === "falhou" || tipo === "excluido") {
+            if(tipo === "sucesso" || tipo === "falhou" || tipo === "excluido" || tipo === "adicionadoSoma" || tipo === "removidoSoma") {
                 const popUpContainer = document.createElement("div");
                 const novoPopUp = document.createElement("div");
                 const identificador = moment().format("HHmmssSSS").toString();

@@ -3,7 +3,6 @@ $(document).ready(() => {
     const HOST_NAME = "http://localhost:8080";
     const PATH = "/api/calc/";
     var arquivoResultados = [];
-    var subtotal;
 
     inicializarBotoes();
     inicializarValidacaoCampos();
@@ -146,7 +145,7 @@ $(document).ready(() => {
         function chamandoValidacoes() {
             
             if(estaVazio("#dataIni") || estaVazio("#dataFim") || estaVazio("#horaIni") || estaVazio("#horaFim")) {
-                chamarPopUp("falhou", "Verifique os campos!");
+                chamarPopUp("falhou", "Verifique os campos.");
                 moverPagina(".titulo");
 
             } else if(dataInvertida()) {
@@ -432,20 +431,24 @@ $(document).ready(() => {
         }
 
         function copiarCalculo(button, tipo) {
-            $(button).click(function() {
-                if(tipo === "resultado") {
-                    var $textarea = $(this).parent().parent().children("textarea");
-                    $textarea.select();
-                    document.execCommand("copy");
-                    chamarPopUp("sucesso", "Resultado copiado.");
-                }
-                if(tipo === "somador") {
+            if(tipo === "resultado") {
+                $(button).click(function() {
+                        var $textarea = $(this).parent().parent().children("textarea");
+                        $textarea.select();
+                        document.execCommand("copy");
+                        chamarPopUp("sucesso", "Resultado copiado.");
+                });
+            }
+            
+            if(tipo === "somador" && !$(button).hasClass("atribuido")) {
+                $(button).click(function() {
                     var $textarea = $("#total-geral");
                     $textarea.select();
                     document.execCommand("copy");
                     chamarPopUp("sucesso", "Somador copiado.");
-                }    
-            });
+                });
+                $(button).addClass("atribuido");
+            }
         }
 
         function removerCalculo(button) {
@@ -457,7 +460,7 @@ $(document).ready(() => {
                         arquivoResultados.splice(i, 1);
                     }
                 }
-                chamarPopUp("excluido", "Resultado excluído!");
+                chamarPopUp("falhou", "Resultado excluído.");
                 enumerarResultado(arquivoResultados);
                 mostrarResultado();
             });
@@ -531,36 +534,7 @@ $(document).ready(() => {
                 $(".resultado").addClass("invisible");
                 overPagina(".titulo");
             }         
-        }
-
-        function chamarPopUp(tipo, mensagem) {
-            if (tipo === "sucesso" 
-             || tipo === "falhou" 
-             || tipo === "excluido"
-             || tipo === "adicionadoSoma" 
-             || tipo === "removidoSoma") {
-
-                const popUpContainer = document.createElement("div");
-                const novoPopUp = document.createElement("div");
-                const identificador = moment().format("HHmmssSSS").toString();
-
-                popUpContainer.classList.add("popup-container");
-                popUpContainer.id = identificador;
-                novoPopUp.classList.add("popup");
-                novoPopUp.classList.add(tipo);
-                novoPopUp.innerHTML = mensagem;
-                popUpContainer.append(novoPopUp);
-                $(".popup-calculo").append(popUpContainer);
-                
-                // TESTE
-                setTimeout(function() {
-                    $("#" + identificador).css('-webkit-animation', 'fadeOut 500ms');
-                    $("#" + identificador).bind('webkitAnimationEnd', function() {
-                        $("#" + identificador).remove();
-                    });
-                }, 3000);
-            }
-        }
+        } 
 
         function estaVazio(input) {
             if($(input).val().length === 0) {

@@ -330,22 +330,6 @@ button {
     padding-bottom: 25px;
 }
 
-.confirm-box {
-    display: flex;
-    flex-direction: column;
-    align-content: center;
-    align-items: center;
-    position: fixed;
-    top: 50%;
-    right: 50%;
-    padding-right: 35px;
-    border-radius: 1rem;
-    color: #ffffff;
-    width: fit-content;
-    height: fit-content;
-}
-
-
 .resultado {
     padding: 50px;
     padding-bottom: 100px;
@@ -480,6 +464,21 @@ button {
     height: 50px;
     width: 140px;
     color: #ffffff;
+}
+
+.resultado .divTodosResultados {
+    width: 1px;
+    height: 1px;
+    color: #ffffff00;
+    background-color: #ffffff00;
+}
+
+.resultado .divTodosResultados textarea {
+    width: 5px;
+    height: 5px;
+    font-size: 1px;
+    color: #ffffff00;
+    background-color: #ffffff00;
 }
 
 .btnCopiar {

@@ -13,10 +13,11 @@ $(document).ready(() => {
         // Botão Alterar Datas.
         $("#btnAlterarDatas").click(() => {
             $("#dataIni").val(moment().format("yyyy-MM-DD"));
-            validacaoDatas("#dataIni");
             $("#dataFim").val(moment().format("yyyy-MM-DD"));
+            validacaoDatas("#dataIni");
             validacaoDatas("#dataFim");
             moverPagina(".titulo");
+            chamarPopUp("sucesso", "Datas atualizadas.");
         });
 
         // Botão Limpar.
@@ -26,9 +27,7 @@ $(document).ready(() => {
 
         // Botão Info.
         $("#opcaoinfo").click(() => {
-            // document.querySelector(?).scrollIntoView({ 
-            //    behavior: 'smooth' 
-            // });
+            // em breve.
         });
     }
 
@@ -91,11 +90,40 @@ $(document).ready(() => {
         window.scroll(0, $(alvo).offset().top);
     }
 
+    function chamarPopUp(tipo, mensagem) {
+        if (tipo === "sucesso" 
+         || tipo === "falhou" 
+         || tipo === "excluido"
+         || tipo === "adicionadoSoma" 
+         || tipo === "removidoSoma") {
+
+            const popUpContainer = document.createElement("div");
+            const novoPopUp = document.createElement("div");
+            const identificador = moment().format("HHmmssSSS").toString();
+
+            popUpContainer.classList.add("popup-container");
+            popUpContainer.id = identificador;
+            novoPopUp.classList.add("popup");
+            novoPopUp.classList.add(tipo);
+            novoPopUp.innerHTML = mensagem;
+            popUpContainer.append(novoPopUp);
+            $(".popup-calculo").append(popUpContainer);
+            
+            // TESTE
+            setTimeout(function() {
+                $("#" + identificador).css('-webkit-animation', 'fadeOut 500ms');
+                $("#" + identificador).bind('webkitAnimationEnd', function() {
+                    $("#" + identificador).remove();
+                });
+            }, 3000);
+        }
+    }
+
     /*
-      > Botão Calcular:
+      Botão Calcular:
          Preparar a requisição;
          Chamar a API de cálculo;
-         Montar elementos e aprensetar na página;
+         Montar elementos e apresentar na página;
     */
    
     $("#btnCalcular").click(() => {
@@ -147,7 +175,7 @@ $(document).ready(() => {
                 const aux = $(primeiro).val();
                 $(primeiro).val($(segundo).val()).change();
                 $(segundo).val(aux).change();
-                chamarPopUp("sucesso", "Valores foram invertidos!");
+                chamarPopUp("sucesso", "Valores foram invertidos.");
                 moverPagina(".titulo");
             }
         }
@@ -193,12 +221,12 @@ $(document).ready(() => {
                         enumerarResultado(arquivoResultados);
                         mostrarResultado();
                         limparInputs();
-                        chamarPopUp("sucesso", "Cálculo realizado!");
+                        chamarPopUp("sucesso", "Cálculo realizado.");
                 },
 
                 error: (error) => {
                     alert("Erro ao tentar realizar o cálculo.");
-                    chamarPopUp("falhou", "Requisição com o servidor falhou!");
+                    chamarPopUp("falhou", "Requisição com o servidor falhou.");
                 }
             });
         }
@@ -267,11 +295,11 @@ $(document).ready(() => {
                     $(".resultado").append(contornoDiv);
                 }
                 // Apenas exibe a div principal dos resultados;
-                mostrarElementosHTML();
+                mostrarElementosHTML(true);
             } else {
                 // Caso não haja resultados a serem exibidos, a div volta a ser invisível.
                 // Necessário caso exista um único resultado e ele seja removido.
-                esconderElementosHTML();
+                mostrarElementosHTML(false);
             }
         }
 
@@ -290,6 +318,7 @@ $(document).ready(() => {
             copiarCalculo("#somadorBtnCopiar", "somador");
             somarCalculo(".btnSomar");
             removerCalculo(".btnRemover");
+            copiarTodosResultados("#somadorBtnCopiarTudo");
         }
 
         function somarCalculo(button) {
@@ -301,11 +330,11 @@ $(document).ready(() => {
                         if(arquivoResultados[i].somar) {
                             arquivoResultados[i].somar = false;
                             $(this).html("Somar");
-                            chamarPopUp("removidoSoma", "Resultado removido do somador!");
+                            chamarPopUp("removidoSoma", "Soma removida.");
                         } else {
                             arquivoResultados[i].somar = true;
                             $(this).html("Parar Soma");
-                            chamarPopUp("adicionadoSoma", "Resultado adicionado ao somador!");
+                            chamarPopUp("adicionadoSoma", "Resultado somado.");
                             moverPagina(".resultado");
                         }
                     }
@@ -318,8 +347,37 @@ $(document).ready(() => {
             // $(".resultado");
         }
 
+        function copiarTodosResultados(button) {    
+            if(!$(button).hasClass("atribuido")) {
+                $(button).click(function() {
+                    // Evitando duplicidade de função no mesmo botão.
+                    var todosTextAreas = $(".resultado textarea");
+                    var quebraLinha = "\n";
+                    var resultadosConcatenados = "";
+                    var momentoCopia = "Copiado em - " + moment().format("DD/MM/YYYY - HH:mm:ss");
+    
+                    for(var i = 0; i < todosTextAreas.length; i++) {
+                        resultadosConcatenados += todosTextAreas[i].innerHTML + quebraLinha + quebraLinha + quebraLinha;
+                    }
+                    resultadosConcatenados += quebraLinha + quebraLinha + momentoCopia;
+
+                    const divTodosResultados = criarElemento("div", "divTodosResultados");
+                    const textareaResultados = criarElemento("textarea", "resultadosText");
+                    textareaResultados.innerHTML = resultadosConcatenados;
+                    divTodosResultados.append(textareaResultados);
+                    $(".resultado").append(divTodosResultados);
+                    $(".resultado .divTodosResultados textarea").select();
+                    document.execCommand("copy");
+                    $(".resultado .divTodosResultados").remove();
+                    chamarPopUp("sucesso", "Todos resultados copiados.");
+                });
+            }
+
+            $(button).addClass("atribuido");
+        }
+
         function checarSomaResultado(array) {
-            let somaTotal = 0;
+            let   somaTotal = 0;
             let qtdCalculos = 0;
 
             for(let i = 0; i < array.length; i++) {
@@ -373,25 +431,25 @@ $(document).ready(() => {
             $("#total-geral").html(exibicaoResultado);
         }
 
-        function copiarCalculo(botao, tipo) {
-            $(botao).click(function() {
+        function copiarCalculo(button, tipo) {
+            $(button).click(function() {
                 if(tipo === "resultado") {
                     var $textarea = $(this).parent().parent().children("textarea");
                     $textarea.select();
                     document.execCommand("copy");
-                    chamarPopUp("sucesso", "Resultado copiado!");
+                    chamarPopUp("sucesso", "Resultado copiado.");
                 }
                 if(tipo === "somador") {
                     var $textarea = $("#total-geral");
                     $textarea.select();
                     document.execCommand("copy");
-                    chamarPopUp("sucesso", "Somador copiado!");
+                    chamarPopUp("sucesso", "Somador copiado.");
                 }    
             });
         }
 
-        function removerCalculo(botao) {
-            $(botao).click(function() {
+        function removerCalculo(button) {
+            $(button).click(function() {
                 const idResultado = retornarUltimaClasse($(this));
 
                 for(var i = 0; i < arquivoResultados.length; i++) {
@@ -400,26 +458,26 @@ $(document).ready(() => {
                     }
                 }
                 chamarPopUp("excluido", "Resultado excluído!");
-                // Atualizando os resultados restantes:
                 enumerarResultado(arquivoResultados);
                 mostrarResultado();
             });
         }
 
-        // Passe o '$(this)' para essa função sempre.
         function retornarUltimaClasse(elementoThis) {
             const classes = elementoThis.attr("class").split(" ");
             const resultado = classes[(classes.length - 1)];
             return resultado;
         }
 
-        function efeitoMouseHoverBotao(botao, alvo, estiloHover, estiloNormal) {
-            $(botao).mouseover(function() {
+        function efeitoMouseHoverBotao(button, alvo, estiloHover, estiloNormal) {
+            $(button).mouseover(function() {
         
                 if(estiloNormal.length === 0) {
                     $(this).parents(alvo).addClass(estiloHover);
+
                 } else if(alvo === ".resultadoText") {
                     $(this).parent().parent().children(alvo).removeClass(estiloNormal).addClass(estiloHover);
+
                 } else {
                     $(this).parents(alvo).removeClass(estiloNormal).addClass(estiloHover);
                 }
@@ -428,19 +486,14 @@ $(document).ready(() => {
 
                 if(estiloNormal.length === 0) {
                     $(this).parents(alvo).removeClass(estiloNormal);
+
                 } else if(alvo === ".resultadoText") {
                     $(this).parent().parent().children(alvo).removeClass(estiloHover).addClass(estiloNormal);
+
                 } else {
                     $(this).parents(alvo).removeClass(estiloHover).addClass(estiloNormal);
                 }
             });
-        }
-
-        function estaVazio(valor) {
-            if(valor === null) {
-                return true;
-            }
-            return false;
         }
 
         function limparElementos() {
@@ -469,18 +522,24 @@ $(document).ready(() => {
             }
         }
 
-        function mostrarElementosHTML() {
-            $(".resultado").removeClass("invisible");
-            moverPagina(".contornoDiv:last");
-        }
-
-        function esconderElementosHTML() {
-            $(".resultado").addClass("invisible");
-            moverPagina(".titulo");
+        function mostrarElementosHTML(boolean) {
+            if(boolean) {
+                $(".resultado").removeClass("invisible");
+                moverPagina(".contornoDiv:last");
+                
+            } else {
+                $(".resultado").addClass("invisible");
+                overPagina(".titulo");
+            }         
         }
 
         function chamarPopUp(tipo, mensagem) {
-            if(tipo === "sucesso" || tipo === "falhou" || tipo === "excluido" || tipo === "adicionadoSoma" || tipo === "removidoSoma") {
+            if (tipo === "sucesso" 
+             || tipo === "falhou" 
+             || tipo === "excluido"
+             || tipo === "adicionadoSoma" 
+             || tipo === "removidoSoma") {
+
                 const popUpContainer = document.createElement("div");
                 const novoPopUp = document.createElement("div");
                 const identificador = moment().format("HHmmssSSS").toString();
@@ -499,7 +558,6 @@ $(document).ready(() => {
                     $("#" + identificador).bind('webkitAnimationEnd', function() {
                         $("#" + identificador).remove();
                     });
-
                 }, 3000);
             }
         }

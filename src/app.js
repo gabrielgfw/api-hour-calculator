@@ -40,7 +40,7 @@ app.post("/api/calc/", (req, res) => {
         res.json(result);
 
     }).catch((error) => {
-        createLog("aditional", "Falha - Erro na Requsição.", error.toString());
+        createLog("aditional", "Falha - Erro na Requsição.", error.name + ": " + error.message);
         res.json(error);
     });
 });

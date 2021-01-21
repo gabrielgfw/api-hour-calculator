@@ -21,7 +21,7 @@ $(document).ready(() => {
 
         // Botão Limpar.
         $("#opcaolimpar").click(() => {
-            document.location.reload();
+            chamarConfirmBox("limpar", "Deseja resetar a página?");
         });
 
         // Botão Info.
@@ -118,6 +118,88 @@ $(document).ready(() => {
         }
     }
 
+    function chamarConfirmBox(tipo, mensagem) {
+        const divConfirmBox = criarElemento("div", "confirmBox centered");
+        const containerConfirmBox = criarElemento("div", "confirmBoxContainer");
+        const divTextContainer = criarElemento("div", "textContainer");
+        const textarea = criarElemento("textarea", "textConfirmBox");
+        const divButtonContainer = criarElemento("div", "buttonContainer");
+        const btnConfirmBox = criarElemento("div");
+        const btnCancelBox = criarElemento("div");
+        const btnConfirm = criarElemento("button", "confirmBtn");
+        const btnCancel = criarElemento("button", "cancelBtn");
+
+        textarea.innerHTML = mensagem;
+        btnConfirm.innerHTML = "Confirmar";
+        btnCancel.innerHTML = "Cancelar";
+        divTextContainer.append(textarea);
+        containerConfirmBox.append(divTextContainer);
+        btnConfirmBox.append(btnConfirm);
+        btnCancelBox.append(btnCancel);
+        divButtonContainer.append(btnConfirmBox, btnCancelBox);
+        containerConfirmBox.append(divButtonContainer);
+        divConfirmBox.append(containerConfirmBox);
+        $(divConfirmBox).insertAfter(".popup-calculo").removeClass("invisible");
+        $(".confirmBox .textConfirmBox").prop("readonly", true);
+        congelarPagina(true);
+
+        $(".confirmBox .confirmBtn").click(function() {
+            $(".confirmBox").remove();
+            $(".confirm").addClass("invisible");
+            // Tipo de confirm box:
+            // Configurar aqui as possibilidades de ações do Confirm Box.
+            // Neste caso está recebendo um array, que repassa os valores
+            // a serem invertidos, mas poderia simplesmente ser uma string
+            // para outra determinada ação.
+            if(tipo[0] === "inverterValores") {
+                inverterValores(tipo[1], tipo[2]);
+
+            } else if(tipo === "limpar") {
+                resetarPagina();
+            }
+
+            congelarPagina(false);
+        });
+        $(".confirmBox .cancelBtn").click(function() {
+            $(".confirmBox").remove();
+            $(".confirm").addClass("invisible");
+
+            congelarPagina(false);
+        });
+    }
+
+    function congelarPagina(boolean) {
+        if(boolean) {
+            $(".cabecalho, .labelsInputs, .resultado, .divBotoes").addClass("congelar")
+        } else {
+            $(".cabecalho, .labelsInputs, .resultado, .divBotoes").removeClass("congelar");
+        }
+    }
+
+    function criarElemento(elementoHtml, classe) {
+        let elemento = document.createElement(elementoHtml);    
+
+        if(classe != null) {
+            const classes = classe.split(' ')
+            classes.forEach((classe) => {
+                elemento.classList.add(classe);
+            });
+        }
+        return elemento;
+    }
+
+    function inverterValores(primeiro, segundo) {
+        const aux = $(primeiro).val();
+        $(primeiro).val($(segundo).val()).change();
+        $(segundo).val(aux).change();
+        chamarPopUp("sucesso", "Valores foram invertidos.");
+        moverPagina(".titulo");
+    }
+
+    function resetarPagina() {
+        document.location.reload();
+    }
+
     /*
       Botão Calcular:
          Preparar a requisição;
@@ -149,11 +231,11 @@ $(document).ready(() => {
                 moverPagina(".titulo");
 
             } else if(dataInvertida()) {
-                inverterValores("#dataIni", "#dataFim", "A data inicial informada é maior que a data final, deseja inverter?");
-    
+                chamarConfirmBox(["inverterValores", "#dataIni", "#dataFim"], "A data inicial informada é maior que a data final, deseja inverter?");
+
             } else if(horarioInvertido()) {
-                inverterValores("#horaIni", "#horaFim", "Horário inicial é menor que o horário final, deseja inverter os horários?");
-    
+                chamarConfirmBox(["inverterValores", "#horaIni", "#horaFim"], "Horário inicial é menor que o horário final, deseja inverter os horários?");
+           
             } else {
                 const body = montarReqBody();
                 chamarAPI(body);
@@ -165,17 +247,6 @@ $(document).ready(() => {
                 return true;
             } else {
                 return false;
-            }
-        }
-
-        function inverterValores(primeiro, segundo, mensagem) {
-            let inverter = confirm(mensagem);
-            if(inverter) {
-                const aux = $(primeiro).val();
-                $(primeiro).val($(segundo).val()).change();
-                $(segundo).val(aux).change();
-                chamarPopUp("sucesso", "Valores foram invertidos.");
-                moverPagina(".titulo");
             }
         }
 
@@ -343,10 +414,6 @@ $(document).ready(() => {
             });
         }
 
-        function efeitoSomaAdicionada() {
-            // $(".resultado");
-        }
-
         function copiarTodosResultados(button) {    
             if(!$(button).hasClass("atribuido")) {
                 $(button).click(function() {
@@ -475,25 +542,19 @@ $(document).ready(() => {
 
         function efeitoMouseHoverBotao(button, alvo, estiloHover, estiloNormal) {
             $(button).mouseover(function() {
-        
                 if(estiloNormal.length === 0) {
                     $(this).parents(alvo).addClass(estiloHover);
-
                 } else if(alvo === ".resultadoText") {
                     $(this).parent().parent().children(alvo).removeClass(estiloNormal).addClass(estiloHover);
-
                 } else {
                     $(this).parents(alvo).removeClass(estiloNormal).addClass(estiloHover);
                 }
 
             }).mouseout(function() {
-
                 if(estiloNormal.length === 0) {
                     $(this).parents(alvo).removeClass(estiloNormal);
-
                 } else if(alvo === ".resultadoText") {
                     $(this).parent().parent().children(alvo).removeClass(estiloHover).addClass(estiloNormal);
-
                 } else {
                     $(this).parents(alvo).removeClass(estiloHover).addClass(estiloNormal);
                 }
@@ -502,19 +563,7 @@ $(document).ready(() => {
 
         function limparElementos() {
             $(".contornoDiv").remove();
-        }
-
-        function criarElemento(elementoHtml, classe) {
-            let elemento = document.createElement(elementoHtml);    
-
-            if(classe != null) {
-                const classes = classe.split(' ')
-                classes.forEach((classe) => {
-                    elemento.classList.add(classe);
-                });
-            }
-            return elemento;
-        }
+        }        
  
         function mascaraDoisDigitos(valor) {
             const parseString = valor.toString();
@@ -533,7 +582,7 @@ $(document).ready(() => {
                 
             } else {
                 $(".resultado").addClass("invisible");
-                overPagina(".titulo");
+                moverPagina(".titulo");
             }         
         } 
 

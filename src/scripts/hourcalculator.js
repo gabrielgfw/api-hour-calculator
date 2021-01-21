@@ -292,6 +292,7 @@ $(document).ready(() => {
                     resultadoDiv.append(divBtn);
                     contornoDiv.append(resultadoDiv);
                     $(".resultado").append(contornoDiv);
+                    $(".resultado textarea").prop("readonly", true);
                 }
                 // Apenas exibe a div principal dos resultados;
                 mostrarElementosHTML(true);

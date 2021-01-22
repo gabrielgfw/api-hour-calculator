@@ -4,8 +4,8 @@ Projeto criado com a intenção de facilitar o cálculo entre horas, possibilita
 # Cliente Web - Diferença entre Horas <br>
 Com o objetivo de ser uma ferramenta simples e de fácil aprendizagem, o cliente web possibilita para o usuário as seguintes facilidades:<br><br>
 
-• Resultados com informações objetivas para fácil utilização;
-• Possibilidade de cálculo entre dois horários distintos, sendo possível selecionar datas diferentes, simulando o cálculo entre dias diferentes.
+• Resultados com informações objetivas para fácil utilização;<br>
+• Possibilidade de cálculo entre dois horários distintos, sendo possível selecionar datas diferentes, simulando o cálculo entre dias diferentes.<br><br><br>
 
 
 Foi utilizado para desenvolvimento do cliente web as seguintes tecnologias: <br><br>
@@ -14,7 +14,7 @@ Foi utilizado para desenvolvimento do cliente web as seguintes tecnologias: <br>
 • CSS; <br>
 • Javascript; <br>
 • JQuery; <br>
-• Moment; <br>
+• Moment; <br><br><br>
 
 Abaixo exemplo de utilização do cliente: <br><br>
 
@@ -115,9 +115,9 @@ Acessando Web Client (em desenvolvimento): <br>
 
 # Futuras implementações <br>
 
-• Avaliar estabilidade da aplicação web;
-• Disponibilizar a API de forma pública;
-• Disponibilizar Cliente Web de forma pública;
+• Avaliar estabilidade da aplicação web;<br>
+• Disponibilizar a API de forma pública;<br>
+• Disponibilizar Cliente Web de forma pública;<br>
 • Sistema de Contas; <br>
 • Cada conta possuir seu histórico de resultados;<br>
 • Possibilitar a criação de grupo de resultados; <br>

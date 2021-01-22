@@ -132,6 +132,7 @@ $(document).ready(() => {
         textarea.innerHTML = mensagem;
         btnConfirm.innerHTML = "Confirmar";
         btnCancel.innerHTML = "Cancelar";
+        
         divTextContainer.append(textarea);
         containerConfirmBox.append(divTextContainer);
         btnConfirmBox.append(btnConfirm);

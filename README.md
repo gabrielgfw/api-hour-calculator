@@ -1,25 +1,34 @@
 # Calculador de Horas <br>
 Projeto criado com a intenção de facilitar o cálculo entre horas, possibilitando cálculos entre datas diferentes, obtendo informações resumidas para aplicação e gestão.<br><br>
 
-# Projeto de gestão de horas <br>
-Em paralelo a API, está sendo desenvolvido um cliente web para gestão de horas, com o intuíto mais voltado à aprendizagem utilizando: <br><br>
+# Cliente Web - Diferença entre Horas <br>
+Com o objetivo de ser uma ferramenta simples e de fácil aprendizagem, o cliente web possibilita para o usuário as seguintes facilidades:<br><br>
+
+• Resultados com informações objetivas para fácil utilização;
+• Possibilidade de cálculo entre dois horários distintos, sendo possível selecionar datas diferentes, simulando o cálculo entre dias diferentes.
+
+
+Foi utilizado para desenvolvimento do cliente web as seguintes tecnologias: <br><br>
+
 • HTML; <br>
 • CSS; <br>
 • Javascript; <br>
 • JQuery; <br>
 • Moment; <br>
 
-#### Atual estado do cliente web:
-![alt text](https://raw.githubusercontent.com/gabrielgfw/api-hour-calculator/master/exemplo.gif)
+Abaixo exemplo de utilização do cliente: <br><br>
+
+![examplo gif](https://github.com/gabrielgfw/api-hour-calculator/blob/master/examplo.gif?raw=true)
 <br>
+
 # API <br>
 
-Desenvolvida em Node, a API utiliza alguns frameworks para seu funcionamento (incluindo futuras features): <br><br>
+Desenvolvida em Node, a API utiliza alguns frameworks para seu funcionamento: <br><br>
 • Express; <br>
 • Moment; <br>
-• MongoDB (futuras features); <br>
-• Mongoose (futuras features); <br>
-• Nunjucks (futuras features); <br>
+• MongoDB  (para futuras atualizações); <br>
+• Mongoose (para futuras atualizações); <br>
+• Nunjucks (para futuras atualizações); <br>
 <br>
 
 # Consumindo API <br>
@@ -104,14 +113,15 @@ Acessando Web Client (em desenvolvimento): <br>
 <a href="http://localhost:8080/"># Local Host</a> <br>
 <br>
 
-# Futuras implementações: <br>
+# Futuras implementações <br>
 
-• Finalizar implantação da visualização dos resultados; <br>
-• Refatoração para deixar o código mais limpo; <br>
-• Funções mais coesas; <br>
-• Melhorias visuais; <br>
-• Sistema de Contas: Login, Cadastro, Gestão de Conta; <br>
-• Melhorar funcionalidades com os resultados de cálculo; <br>
+• Avaliar estabilidade da aplicação web;
+• Disponibilizar a API de forma pública;
+• Disponibilizar Cliente Web de forma pública;
+• Sistema de Contas; <br>
+• Cada conta possuir seu histórico de resultados;<br>
+• Possibilitar a criação de grupo de resultados; <br>
+
 
 
 

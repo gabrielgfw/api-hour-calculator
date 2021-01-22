@@ -31,7 +31,7 @@ Desenvolvida em Node, a API utiliza alguns frameworks para seu funcionamento: <b
 • Nunjucks (para futuras atualizações); <br>
 <br>
 
-# Consumindo API <br>
+# Consumindo a API <br>
 
 Informações para a chamada da API:
 
@@ -67,7 +67,7 @@ Retorno:
     result:
     {
       diffHours: resultHours,
-      diffMinutes: diffMinutes
+      diffMinutes: resultMinutes
     },
 
     rawResult:

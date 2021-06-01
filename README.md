@@ -100,7 +100,7 @@ git clone https://github.com/gabrielgfw/api-hour-calculator
 Instalando dependências: <br>
 
 ```
-npm update
+npm install
 ```
 <br>
 Inicializando a API: <br>

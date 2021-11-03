@@ -165,6 +165,6 @@ app.use((req,res) => {
     res.render(path.join(__dirname,'./index.html'));
 });
 // Server port.
-app.listen(8080, () => {
-    createLog("normal", "Servidor inicializado na porta 8080.");
+app.listen(9999, () => {
+    createLog("normal", "Servidor inicializado na porta 9999.");
 });

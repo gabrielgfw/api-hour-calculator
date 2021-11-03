@@ -1,6 +1,6 @@
 $(document).ready(() => {
     // Variáveis globais:
-    const HOST_NAME = "http://localhost:8080";
+    const HOST_NAME = "http://localhost:9999";
     const PATH = "/api/calc/";
     var arquivoResultados = [];
 

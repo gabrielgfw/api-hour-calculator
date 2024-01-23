@@ -16,16 +16,6 @@ $(document).ready(() => {
       moverPagina(".titulo");
       chamarPopUp("sucesso", "Datas atualizadas.");
     });
-
-    // Botão Limpar.
-    $("#opcaolimpar").click(() => {
-      chamarConfirmBox("limpar", "Deseja resetar a página?");
-    });
-
-    // Botão Info.
-    $("#opcaoinfo").click(() => {
-      // em breve.
-    });
   }
 
   function inicializarValidacaoCampos() {
